@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conect Login/Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Conect Login/Signup</h2>
+        <input type="text" id="contact" placeholder="Enter phone number or email">
+        <button onclick="submitContact()">Submit</button>
+        <div id="otpSection" style="display: none;">
+            <input type="text" id="otp" placeholder="Enter OTP">
+            <button onclick="verifyOtp()">Verify OTP</button>
+        </div>
+    </div>
+
+    <script>
+        function submitContact() {
+            const contact = document.getElementById('contact').value;
+            fetch('http://localhost:3000/sendOtp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ contact })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      document.getElementById('otpSection').style.display = 'block';
+                  } else {
+                      alert('Error sending OTP');
+                  }
+              });
+        }
+
+        function verifyOtp() {
+            const contact = document.getElementById('contact').value;
+            const otp = document.getElementById('otp').value;
+            fetch('http://localhost:3000/verifyOtp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ contact, otp })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      alert('Login successful');
+                  } else {
+                      alert('Invalid OTP');
+                  }
+              });
+        }
+    </script>
+</body>
+</html>
